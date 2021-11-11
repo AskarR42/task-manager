@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ru.tinkoff.fintech.task_manager.dao.TaskRepository">
+
+    <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
+        INSERT INTO tasks (task_id, text)
+        VALUES (#{id}, #{text})
+    </insert>
+
+    <select id="findAll">
+        SELECT *
+        FROM tasks
+    </select>
+
+    <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.Task" resultMap="TaskMap">
+        SELECT *
+        FROM tasks
+        WHERE task_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
+        DELETE
+        FROM tasks
+        WHERE task_id = #{id}
+    </delete>
+
+    <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
+        UPDATE tasks
+        SET text = #{text}
+        WHERE task_id = #{id}
+    </update>
+
+    <resultMap id="TaskMap" type="ru.tinkoff.fintech.task_manager.model.Task">
+        <id property="id" column="task_id"/>
+        <result property="text" column="text"/>
+    </resultMap>
+</mapper>

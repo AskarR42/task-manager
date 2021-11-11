@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ru.tinkoff.fintech.task_manager.dao.UserRepository">
+
+    <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.User">
+        INSERT INTO users (user_id, name, email, password)
+        VALUES (#{id}, #{name}, #{email}, #{password})
+    </insert>
+
+    <select id="findAll" resultMap="UserMap">
+        SELECT *
+        FROM users
+    </select>
+
+    <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.User" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE user_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.User">
+        DELETE
+        FROM users
+        WHERE user_id = #{id}
+    </delete>
+
+    <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.User">
+        UPDATE users
+        SET name = #{name}, email = #{email}, password = #{password}
+        WHERE user_id = #{id}
+    </update>
+
+    <resultMap id="UserMap" type="ru.tinkoff.fintech.task_manager.model.User">
+        <id property="id" column="user_id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+    </resultMap>
+</mapper>
