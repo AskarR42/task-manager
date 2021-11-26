@@ -7,7 +7,9 @@ public enum ApplicationError {
     USER_ALREADY_EXISTS("User already exists", 400),
     USER_NOT_FOUND("User not found", 400),
     TASK_ALREADY_EXISTS("Task already exists", 400),
-    TASK_NOT_FOUND("Task not found", 400);
+    TASK_NOT_FOUND("Task not found", 400),
+    PROJECT_NOT_FOUND("Project not found", 400),
+    PROJECT_ALREADY_EXISTS("Project already exists", 400);
 
     public String message;
     public int code;

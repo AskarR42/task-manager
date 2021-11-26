@@ -20,6 +20,12 @@
         WHERE user_id = #{id}
     </select>
 
+    <select id="findByName" parameterType="ru.tinkoff.fintech.task_manager.model.User" resultMap="UserMap">
+        SELECT *
+        FROM users
+        WHERE name = #{name}
+    </select>
+
     <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.User">
         DELETE
         FROM users

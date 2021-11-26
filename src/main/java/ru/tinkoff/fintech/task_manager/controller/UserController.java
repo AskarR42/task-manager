@@ -53,7 +53,7 @@ public class UserController {
         }
     }
 
-    @PutMapping
+    @PutMapping(consumes = APPLICATION_JSON_VALUE)
     public void editUser(@Valid @RequestBody User user) {
         try {
             userService.editUser(user);

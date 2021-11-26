@@ -1,4 +1,4 @@
-package ru.tinkoff.fintech.task_manager;
+package ru.tinkoff.fintech.task_manager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -24,12 +24,12 @@ import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.USER_NO
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-class StudentControllerTest {
+class UserControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
-	private ObjectMapper jackson = new ObjectMapper();
+	private final ObjectMapper jackson = new ObjectMapper();
 
 	@Test
 	void testAddNewUserSuccess() throws Exception {
@@ -46,10 +46,12 @@ class StudentControllerTest {
 	void testBlankName() throws Exception {
 		User user =  prepareUserWithBlankName(UUID.randomUUID());
 		String userJson = jackson.writeValueAsString(user);
+		String notValidNameMessage = prepareNotValidNameMessage();
 
 		mockMvc.perform(post("/user")
 					.contentType("application/json")
 					.content(userJson))
+				.andExpect(content().string(notValidNameMessage))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -57,10 +59,13 @@ class StudentControllerTest {
 	void testNullName() throws Exception {
 		User user = prepareUserWithNullName(UUID.randomUUID());
 		String userJson = jackson.writeValueAsString(user);
+		String notValidNameMessage = prepareNotValidNameMessage();
+
 
 		mockMvc.perform(post("/user")
 					.contentType("application/json")
 					.content(userJson))
+				.andExpect(content().string(notValidNameMessage))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -68,10 +73,12 @@ class StudentControllerTest {
 	void testBlankEmail() throws Exception {
 		User user = prepareUserWithBlackEmail(UUID.randomUUID());
 		String userJson = jackson.writeValueAsString(user);
+		String notValidEmailMessage = prepareNotValidEmailMessage();
 
 		mockMvc.perform(post("/user")
 					.contentType("application/json")
 					.content(userJson))
+				.andExpect(content().string(notValidEmailMessage))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -79,10 +86,12 @@ class StudentControllerTest {
 	void testNullEmail() throws Exception {
 		User user = prepareUserWithNullEmail(UUID.randomUUID());
 		String userJson = jackson.writeValueAsString(user);
+		String notValidEmailMessage = prepareNotValidEmailMessage();
 
 		mockMvc.perform(post("/user")
 					.contentType("application/json")
 					.content(userJson))
+				.andExpect(content().string(notValidEmailMessage))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -90,10 +99,13 @@ class StudentControllerTest {
 	void testInvalidEmail() throws Exception {
 		User user = prepareUserWithInvalidEmail(UUID.randomUUID());
 		String userJson = jackson.writeValueAsString(user);
+		String notValidEmailMessage = prepareNotValidEmailMessage();
+
 
 		mockMvc.perform(post("/user")
 					.contentType("application/json")
 					.content(userJson))
+				.andExpect(content().string(notValidEmailMessage))
 				.andExpect(status().isBadRequest());
 	}
 
@@ -194,6 +206,14 @@ class StudentControllerTest {
 
 	private ApplicationError.ApplicationExceptionCompanion prepareUserNotFoundExceptionCompanion(UUID id) {
 		return USER_NOT_FOUND.exception(String.format("User with id=%s not found", id.toString())).companion;
+	}
+
+	private String prepareNotValidNameMessage() {
+		return "{\"message\":\"Name cannot be empty or null\"}";
+	}
+
+	private String prepareNotValidEmailMessage() {
+		return "{\"message\":\"Invalid email\"}";
 	}
 
 }

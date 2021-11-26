@@ -15,15 +15,13 @@ public class User {
     @NotNull(message = "Id cannot be null")
     private UUID id;
 
-    @NotNull(message = "Name cannot be null")
-    @NotEmpty(message = "Name cannot be empty")
+    @NotEmpty(message = "Name cannot be empty or null")
     private String name;
 
     @ValidEmail
     private String email;
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Password cannot be empty or null")
     private String password;
 
     public static User of(String name, String email, String password) {

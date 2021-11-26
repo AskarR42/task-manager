@@ -16,6 +16,8 @@ public interface UserRepository {
 
     Optional<User> findById(UUID id);
 
+    Optional<User> findByName(String name);
+
     void delete(User user);
 
     void edit(User user);

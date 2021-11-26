@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ru.tinkoff.fintech.task_manager.dao.ProjectRepository">
+
+    <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
+        INSERT INTO projects (project_id, title, user_id)
+        VALUES (#{id}, #{title}, #{userId})
+    </insert>
+
+    <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.Project" resultMap="ProjectMap">
+        SELECT *
+        FROM projects
+        WHERE project_id = #{id}
+    </select>
+
+    <select id="findAllProjectsOfUser" parameterType="ru.tinkoff.fintech.task_manager.model.User">
+        SELECT *
+        FROM projects
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
+        DELETE
+        FROM projects
+        WHERE project_id = #{id}
+    </delete>
+
+    <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
+        UPDATE projects
+        SET title = #{title}, user_id = #{userId}
+        WHERE project_id = #{id}
+    </update>
+
+    <resultMap id="ProjectMap" type="ru.tinkoff.fintech.task_manager.model.Project">
+        <id property="id" column="project_id"/>
+        <result property="title" column="title"/>
+        <result property="userId" column="user_id"/>
+    </resultMap>
+</mapper>

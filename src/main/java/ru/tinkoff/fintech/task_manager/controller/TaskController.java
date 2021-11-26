@@ -2,6 +2,7 @@ package ru.tinkoff.fintech.task_manager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.tinkoff.fintech.task_manager.exception.ProjectNotFoundException;
 import ru.tinkoff.fintech.task_manager.exception.TaskAlreadyExistsException;
 import ru.tinkoff.fintech.task_manager.exception.TaskNotFoundException;
 import ru.tinkoff.fintech.task_manager.model.Task;
@@ -9,11 +10,11 @@ import ru.tinkoff.fintech.task_manager.service.TaskService;
 
 import javax.validation.Valid;
 
+import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
-import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.TASK_ALREADY_EXISTS;
-import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.TASK_NOT_FOUND;
+import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.*;
 
 @RequestMapping("/task")
 @RestController
@@ -41,6 +42,15 @@ public class TaskController {
             taskService.deleteTaskById(id);
         } catch (TaskNotFoundException e) {
             throw TASK_NOT_FOUND.exception(format("Task with id=%s not found", id));
+        }
+    }
+
+    @GetMapping("/{projectId}")
+    public List<Task> findTasksOfProject(@PathVariable UUID projectId) {
+        try {
+            return taskService.getAllTasksOfProject(projectId);
+        } catch (ProjectNotFoundException e) {
+            throw PROJECT_NOT_FOUND.exception(format("Project with id=%s not found", projectId));
         }
     }
 

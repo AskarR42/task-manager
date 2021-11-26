@@ -6,16 +6,19 @@ CREATE TABLE users
     password VARCHAR(64)  NOT NULL
 );
 
-CREATE TABLE boards
+CREATE TABLE projects
 (
-    board_id UUID         PRIMARY KEY,
-    title    VARCHAR(128) NOT NULL
+    project_id UUID         PRIMARY KEY,
+    title      VARCHAR(128) NOT NULL,
+    user_id    UUID,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE tasks
 (
     task_id      UUID         PRIMARY KEY,
     text         VARCHAR(128) NOT NULL,
-    board_id     UUID,
-    FOREIGN KEY (board_id) REFERENCES boards(board_id)
+    column_id    INT,
+    project_id   UUID,
+    FOREIGN KEY (project_id) REFERENCES projects(project_id)
 );

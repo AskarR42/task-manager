@@ -11,10 +11,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Task {
 
-    @NotNull
+    @NotNull(message = "Id cannot be null")
     private UUID id;
 
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "Text cannot be empty or null")
     private String text;
+
+    private int columnId;
+
+    @NotNull(message = "Project id cannot be null")
+    private UUID projectId;
 }
