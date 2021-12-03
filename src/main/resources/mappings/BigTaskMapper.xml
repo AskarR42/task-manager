@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ru.tinkoff.fintech.task_manager.dao.BigTaskRepository">
+
+    <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.BigTask">
+        INSERT INTO big_tasks(big_task_id, name, description, date, color, column_id, project_id)
+        VALUES(#{id}, #{name}, #{description}, #{date}, #{color}, #{columnId}, #{projectId})
+    </insert>
+    
+    <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.BigTask" resultMap="BigTaskMap">
+        SELECT *
+        FROM big_tasks
+        WHERE big_task_id = #{id}
+    </select>
+
+    <select id="findLittleTasks" parameterType="ru.tinkoff.fintech.task_manager.model.BigTask" resultMap="LittleTaskMap">
+        SELECT *
+        FROM little_tasks
+        WHERE big_task_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.BigTask">
+        DELETE
+        FROM big_tasks
+        WHERE big_task_id = #{id}
+    </delete>
+
+    <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.BigTask">
+        UPDATE big_tasks
+        SET name = #{name}, description = #{description}, date = #{date}, color = #{color}, column_id = #{columnId}
+        WHERE big_task_id = #{id}
+    </update>
+
+    <resultMap id="BigTaskMap" type="ru.tinkoff.fintech.task_manager.model.BigTask">
+        <id property="id" column="big_task_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="date" column="date"/>
+        <result property="color" column="color"/>
+        <result property="columnId" column="column_id"/>
+        <result property="projectId" column="project_id"/>
+    </resultMap>
+
+    <resultMap id="LittleTaskMap" type="ru.tinkoff.fintech.task_manager.model.LittleTask">
+        <id property="id" column="little_task_id"/>
+        <result property="status" column="status"/>
+        <result property="text" column="text"/>
+        <result property="bigTaskId" column="big_task_id"/>
+    </resultMap>
+
+</mapper>

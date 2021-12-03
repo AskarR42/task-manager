@@ -7,13 +7,11 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class Task {
+public class TaskList {
 
     private UUID id;
 
-    private String status;
+    private String name;
 
-    private String text;
-
-    private UUID listOfTasksId;
+    private UUID userId;
 }

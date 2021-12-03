@@ -5,20 +5,14 @@
 <mapper namespace="ru.tinkoff.fintech.task_manager.dao.TaskRepository">
 
     <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
-        INSERT INTO tasks (task_id, text, column_id, project_id)
-        VALUES (#{id}, #{text}, #{columnId}, #{projectId})
+        INSERT INTO tasks (task_id, status, text, task_list_id)
+        VALUES (#{id}, #{status}, #{text}, #{listOfTasksId})
     </insert>
 
     <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.Task" resultMap="TaskMap">
         SELECT *
         FROM tasks
         WHERE task_id = #{id}
-    </select>
-
-    <select id="findAllTasksOfProject" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
-        SELECT *
-        FROM tasks
-        WHERE project_id = #{projectId}
     </select>
 
     <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
@@ -29,14 +23,15 @@
 
     <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.Task">
         UPDATE tasks
-        SET text = #{text}, column_id = #{columnId}, project_id = #{projectId}
+        SET status = #{status}, text = #{text}
         WHERE task_id = #{id}
     </update>
 
     <resultMap id="TaskMap" type="ru.tinkoff.fintech.task_manager.model.Task">
         <id property="id" column="task_id"/>
+        <result property="status" column="status"/>
         <result property="text" column="text"/>
-        <result property="columnId" column="column_id"/>
-        <result property="projectId" column="project_id"/>
+        <result property="listOfTasksId" column="task_list_id"/>
     </resultMap>
+
 </mapper>

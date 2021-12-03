@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class Task {
+public class LittleTask {
 
     private UUID id;
 
@@ -15,5 +15,5 @@ public class Task {
 
     private String text;
 
-    private UUID listOfTasksId;
+    private UUID bigTaskId;
 }

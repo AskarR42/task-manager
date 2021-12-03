@@ -5,8 +5,8 @@
 <mapper namespace="ru.tinkoff.fintech.task_manager.dao.UserRepository">
 
     <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.User">
-        INSERT INTO users (user_id, name, email, password)
-        VALUES (#{id}, #{name}, #{email}, #{password})
+        INSERT INTO users (user_id, name, nickname, email, password)
+        VALUES (#{id}, #{name}, #{nickname}, #{email}, #{password})
     </insert>
 
     <select id="findAll" resultMap="UserMap">
@@ -34,14 +34,16 @@
 
     <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.User">
         UPDATE users
-        SET name = #{name}, email = #{email}, password = #{password}
+        SET name = #{name}, nickname = #{nickname}, email = #{email}, password = #{password}
         WHERE user_id = #{id}
     </update>
 
     <resultMap id="UserMap" type="ru.tinkoff.fintech.task_manager.model.User">
         <id property="id" column="user_id"/>
         <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
         <result property="email" column="email"/>
         <result property="password" column="password"/>
     </resultMap>
+
 </mapper>

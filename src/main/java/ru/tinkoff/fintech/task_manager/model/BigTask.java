@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class Project {
+public class BigTask {
 
     private UUID id;
 
@@ -19,5 +19,7 @@ public class Project {
 
     private String color;
 
-    private UUID userId;
+    private int columnId;
+
+    private UUID projectId;
 }

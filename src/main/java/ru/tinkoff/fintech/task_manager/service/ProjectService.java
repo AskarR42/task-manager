@@ -1,54 +1,101 @@
 package ru.tinkoff.fintech.task_manager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 import ru.tinkoff.fintech.task_manager.dao.ProjectRepository;
-import ru.tinkoff.fintech.task_manager.dao.UserRepository;
-import ru.tinkoff.fintech.task_manager.exception.ProjectAlreadyExistsException;
+import ru.tinkoff.fintech.task_manager.dto.BigTaskDto;
+import ru.tinkoff.fintech.task_manager.dto.ProjectDto;
+import ru.tinkoff.fintech.task_manager.dto.TaskInfo;
 import ru.tinkoff.fintech.task_manager.exception.ProjectNotFoundException;
-import ru.tinkoff.fintech.task_manager.exception.UserNotFoundException;
+import ru.tinkoff.fintech.task_manager.model.BigTask;
+import ru.tinkoff.fintech.task_manager.model.Column;
 import ru.tinkoff.fintech.task_manager.model.Project;
-import ru.tinkoff.fintech.task_manager.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class ProjectService {
 
     ProjectRepository projectRepository;
-    UserRepository userRepository;
+
+    UserService userService;
+    BigTaskService bigTaskService;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserService userService, BigTaskService bigTaskService) {
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+
+        this.userService = userService;
+        this.bigTaskService = bigTaskService;
     }
 
-    public void insertNewProject(Project project) {
-        if (projectRepository.findById(project.getId()).isPresent()) {
-            throw new ProjectAlreadyExistsException();
+    public void save(ProjectDto projectDto, UUID projectId, Authentication authentication) {
+        UUID userId = userService.findCurrentUserId(authentication);
+        projectRepository.save(new Project(projectId, projectDto.getName(), projectDto.getDescription(), projectDto.getDate(), projectDto.getColor(), userId));
+    }
+
+    public List<ProjectDto> findAll(Authentication authentication) {
+        UUID userId = userService.findCurrentUserId(authentication);
+        return projectRepository.findAll(userId)
+            .stream()
+            .map(project -> new ProjectDto(project.getId(), project.getName(), project.getDescription(), project.getDate(), project.getColor()))
+            .toList();
+    }
+
+    public List<BigTaskDto> findBigTasks(UUID projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
+
+        return projectRepository.findBigTasks(project)
+            .stream()
+            .map(bigTask -> new BigTaskDto(
+                bigTask.getId(),
+                new TaskInfo(
+                    bigTask.getName(),
+                    bigTask.getDescription(),
+                    bigTask.getDate(),
+                    bigTask.getColor(),
+                    bigTaskService.findLittleTasks(bigTask.getId())
+                ),
+                bigTask.getProjectId(),
+                bigTask.getColumnId()))
+            .toList();
+    }
+
+    public List<Column> findColumns(UUID projectId) {
+        List<BigTaskDto> bigTaskDtos = findBigTasks(projectId);
+
+        List<List<UUID>> bigTaskIds = new ArrayList<>();
+        bigTaskIds.add(new ArrayList<>());
+        bigTaskIds.add(new ArrayList<>());
+        bigTaskIds.add(new ArrayList<>());
+        for (BigTaskDto bigTaskDto : bigTaskDtos) {
+            bigTaskIds.get(bigTaskDto.getColumnId()).add(bigTaskDto.getId());
         }
-        projectRepository.save(project);
+
+        return List.of(new Column(0, "To do", bigTaskIds.get(0)), new Column(1, "In progress", bigTaskIds.get(1)), new Column(2, "Done", bigTaskIds.get(2)));
     }
 
-    public Project getProjectById(UUID id) {
-        return projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+    public void edit(ProjectDto projectDto, Authentication authentication) {
+        UUID userId = userService.findCurrentUserId(authentication);
+        projectRepository.edit(new Project(projectDto.getId(), projectDto.getName(), projectDto.getDescription(), projectDto.getDate(), projectDto.getColor(), userId));
     }
 
-    public List<Project> getAllProjectsOfUser(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
-
-        return projectRepository.findAllProjectsOfUser(user);
+    public void editBigTasks(List<BigTaskDto> bigTaskDtos) {
+        for (BigTaskDto bigTaskDto : bigTaskDtos) {
+            bigTaskService.edit(bigTaskDto);
+        }
     }
 
-    public void deleteProjectById(UUID id) {
-        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+    public void delete(UUID projectId) {
+        Project project = projectRepository.findById(projectId)
+            .orElseThrow(ProjectNotFoundException::new);
+        for (BigTask bigTask : projectRepository.findBigTasks(project)) {
+            bigTaskService.delete(bigTask.getId());
+        }
         projectRepository.delete(project);
-    }
-
-    public void editProject(Project project) {
-        if (projectRepository.findById(project.getId()).isEmpty()) {
-            throw new ProjectNotFoundException();
-        }
-        projectRepository.edit(project);
     }
 }

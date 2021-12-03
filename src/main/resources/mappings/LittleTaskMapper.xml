@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ru.tinkoff.fintech.task_manager.dao.LittleTaskRepository">
+
+    <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.LittleTask">
+        INSERT INTO little_tasks (little_task_id, status, text, big_task_id)
+        VALUES (#{id}, #{status}, #{text}, #{bigTaskId})
+    </insert>
+
+    <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.LittleTask" resultMap="LittleTaskMap">
+        SELECT *
+        FROM little_tasks
+        WHERE little_task_id = #{id}
+    </select>
+
+    <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.LittleTask">
+        DELETE
+        FROM little_tasks
+        WHERE little_task_id = #{id}
+    </delete>
+    
+    <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.LittleTask">
+        UPDATE little_tasks
+        SET status = #{status}, text = #{text}
+        WHERE little_task_id = #{id}
+    </update>
+
+    <resultMap id="LittleTaskMap" type="ru.tinkoff.fintech.task_manager.model.LittleTask">
+        <id property="id" column="little_task_id"/>
+        <result property="status" column="status"/>
+        <result property="text" column="text"/>
+        <result property="bigTaskId" column="big_task_id"/>
+    </resultMap>
+</mapper>

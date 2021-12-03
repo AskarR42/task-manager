@@ -166,7 +166,7 @@ class UserControllerTest {
 	void testEditUserSuccess() throws Exception {
 		User oldUser = prepareValidUser(UUID.randomUUID());
 		String oldUserJson = jackson.writeValueAsString(oldUser);
-		User newUser = new User(oldUser.getId(), "newName", "newEmail@email.com", "newPassword");
+		User newUser = new User(oldUser.getId(), "newName", "newNickname", "newEmail@email.com", "newPassword");
 		String newUserJson = jackson.writeValueAsString(newUser);
 
 		mockMvc.perform(post("/user")
@@ -181,27 +181,27 @@ class UserControllerTest {
 	}
 
 	private User prepareValidUser(UUID id) {
-		return new User(id, "testName", "testEmail@email.com", "testPassword");
+		return new User(id, "testName", "testNickname", "testEmail@email.com", "testPassword");
 	}
 
 	private User prepareUserWithBlankName(UUID id) {
-		return new User(id, "", "testEmail@email.com", "testPassword");
+		return new User(id, "", "testNickname", "testEmail@email.com", "testPassword");
 	}
 
 	private User prepareUserWithNullName(UUID id) {
-		return new User(id, null, "testEmail@email.com", "testPassword");
+		return new User(id, null, "testNickname", "testEmail@email.com", "testPassword");
 	}
 
 	private User prepareUserWithBlackEmail(UUID id) {
-		return new User(id, "testName", "", "testPassword");
+		return new User(id, "testName", "testNickname", "", "testPassword");
 	}
 
 	private User prepareUserWithNullEmail(UUID id) {
-		return new User(id, "testName", null, "testPassword");
+		return new User(id, "testName", "testNickname", null, "testPassword");
 	}
 
 	private User prepareUserWithInvalidEmail(UUID id) {
-		return new User(id, "testName", "invalidEmail.com", "testPassword");
+		return new User(id, "testName", "testNickname", "invalidEmail.com", "testPassword");
 	}
 
 	private ApplicationError.ApplicationExceptionCompanion prepareUserNotFoundExceptionCompanion(UUID id) {

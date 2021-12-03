@@ -5,9 +5,15 @@
 <mapper namespace="ru.tinkoff.fintech.task_manager.dao.ProjectRepository">
 
     <insert id="save" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
-        INSERT INTO projects (project_id, title, user_id)
-        VALUES (#{id}, #{title}, #{userId})
+        INSERT INTO projects(project_id, name, description, date, color, user_id)
+        VALUES (#{id}, #{name}, #{description}, #{date}, #{color}, #{userId})
     </insert>
+
+    <select id="findAll" parameterType="ru.tinkoff.fintech.task_manager.model.User" resultMap="ProjectMap">
+        SELECT *
+        FROM projects
+        WHERE user_id = #{id}
+    </select>
 
     <select id="findById" parameterType="ru.tinkoff.fintech.task_manager.model.Project" resultMap="ProjectMap">
         SELECT *
@@ -15,10 +21,10 @@
         WHERE project_id = #{id}
     </select>
 
-    <select id="findAllProjectsOfUser" parameterType="ru.tinkoff.fintech.task_manager.model.User">
+    <select id="findBigTasks" parameterType="ru.tinkoff.fintech.task_manager.model.Project" resultMap="BigTaskMap">
         SELECT *
-        FROM projects
-        WHERE user_id = #{userId}
+        FROM big_tasks
+        WHERE project_id = #{id}
     </select>
 
     <delete id="delete" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
@@ -29,13 +35,26 @@
 
     <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.Project">
         UPDATE projects
-        SET title = #{title}, user_id = #{userId}
+        SET name = #{name}, description = #{description}, date = #{date}, color = #{color}
         WHERE project_id = #{id}
     </update>
 
     <resultMap id="ProjectMap" type="ru.tinkoff.fintech.task_manager.model.Project">
         <id property="id" column="project_id"/>
-        <result property="title" column="title"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="date" column="date"/>
+        <result property="color" column="color"/>
         <result property="userId" column="user_id"/>
     </resultMap>
+
+    <resultMap id="BigTaskMap" type="ru.tinkoff.fintech.task_manager.model.BigTask">
+        <id property="id" column="big_task_id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="date" column="date"/>
+        <result property="color" column="color"/>
+        <result property="columnId" column="column_id"/>
+    </resultMap>
+
 </mapper>

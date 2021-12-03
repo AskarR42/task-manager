@@ -3,17 +3,16 @@ package ru.tinkoff.fintech.task_manager.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class Task {
+public class Column {
 
-    private UUID id;
+    private int id;
 
-    private String status;
+    private String title;
 
-    private String text;
-
-    private UUID listOfTasksId;
+    private List<UUID> tasksIds;
 }

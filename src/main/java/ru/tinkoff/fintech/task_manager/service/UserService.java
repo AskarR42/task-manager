@@ -1,9 +1,9 @@
 package ru.tinkoff.fintech.task_manager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.fintech.task_manager.dao.UserRepository;
-import ru.tinkoff.fintech.task_manager.exception.UserAlreadyExistsException;
 import ru.tinkoff.fintech.task_manager.exception.UserNotFoundException;
 import ru.tinkoff.fintech.task_manager.model.User;
 
@@ -20,30 +20,33 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public void insertNewUser(User user) {
-        if (userRepository.findById(user.getId()).isPresent()) {
-            throw new UserAlreadyExistsException();
-        }
+    public void save(User user) {
+        user.setId(UUID.randomUUID());
         userRepository.save(user);
     }
 
-    public User getUserById(UUID id) {
+    public User findById(UUID id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public List<User> getAllUsers() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    public void deleteUserById(UUID id) {
+    public void delete(UUID id) {
         User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
         userRepository.delete(user);
     }
 
-    public void editUser(User user) {
+    public void edit(User user) {
         if (userRepository.findById(user.getId()).isEmpty()) {
             throw new UserNotFoundException();
         }
         userRepository.edit(user);
+    }
+
+    public UUID findCurrentUserId(Authentication authentication) {
+        User user = userRepository.findByName(authentication.getName()).orElseThrow(UserNotFoundException::new);
+        return user.getId();
     }
 }
