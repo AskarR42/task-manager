@@ -32,5 +32,4 @@ public enum ApplicationError {
     }
 
     public static record ApplicationExceptionCompanion(String message, @JsonIgnore int code) {}
-
 }

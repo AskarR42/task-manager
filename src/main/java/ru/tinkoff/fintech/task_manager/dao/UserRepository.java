@@ -18,7 +18,7 @@ public interface UserRepository {
 
     Optional<User> findByName(String name);
 
-    void delete(User user);
-
     void edit(User user);
+
+    void delete(User user);
 }

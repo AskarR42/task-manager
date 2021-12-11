@@ -33,12 +33,12 @@ public class ProjectService {
     }
 
     public void save(ProjectDto projectDto, UUID projectId, Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         projectRepository.save(new Project(projectId, projectDto.getName(), projectDto.getDescription(), projectDto.getDate(), projectDto.getColor(), userId));
     }
 
     public List<ProjectDto> findAll(Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         return projectRepository.findAll(userId)
             .stream()
             .map(project -> new ProjectDto(project.getId(), project.getName(), project.getDescription(), project.getDate(), project.getColor()))
@@ -76,11 +76,11 @@ public class ProjectService {
             bigTaskIds.get(bigTaskDto.getColumnId()).add(bigTaskDto.getId());
         }
 
-        return List.of(new Column(0, "To do", bigTaskIds.get(0)), new Column(1, "In progress", bigTaskIds.get(1)), new Column(2, "Done", bigTaskIds.get(2)));
+        return List.of(new Column(0, "Сделать", bigTaskIds.get(0)), new Column(1, "В процессе", bigTaskIds.get(1)), new Column(2, "Завершены", bigTaskIds.get(2)));
     }
 
     public void edit(ProjectDto projectDto, Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         projectRepository.edit(new Project(projectDto.getId(), projectDto.getName(), projectDto.getDescription(), projectDto.getDate(), projectDto.getColor(), userId));
     }
 

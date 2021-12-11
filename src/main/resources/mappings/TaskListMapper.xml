@@ -34,7 +34,7 @@
     </delete>
 
     <update id="edit" parameterType="ru.tinkoff.fintech.task_manager.model.TaskList">
-        UPDATE tasks
+        UPDATE task_lists
         SET name = #{name}
         WHERE task_list_id = #{id}
     </update>

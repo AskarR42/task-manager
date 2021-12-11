@@ -33,7 +33,7 @@ public class TaskListService {
 
     // Task list always has tasks = []
     public void save(TaskListDto taskListDto, UUID taskListId, Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         taskListRepository.save(new TaskList(taskListId, taskListDto.getName(), userId));
     }
 
@@ -48,7 +48,7 @@ public class TaskListService {
     }
 
     public List<TaskListDto> findAll(Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         return taskListRepository.findAll(userId).stream().map(taskList -> new TaskListDto(taskList.getId(), taskList.getName(), findTasks(taskList.getId()))).toList();
     }
 
@@ -67,7 +67,7 @@ public class TaskListService {
     }
 
     public void edit(TaskListDto listOfTasksDto, Authentication authentication) {
-        UUID userId = userService.findCurrentUserId(authentication);
+        UUID userId = userService.findCurrentUser(authentication).getId();
         if (taskListRepository.findById(listOfTasksDto.getId()).isEmpty()) {
             throw new TaskListNotFoundException();
         }

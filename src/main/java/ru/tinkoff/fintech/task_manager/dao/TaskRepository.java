@@ -13,7 +13,7 @@ public interface TaskRepository {
 
     Optional<Task> findById(UUID id);
 
-    void delete(Task task);
-
     void edit(Task task);
+
+    void delete(Task task);
 }

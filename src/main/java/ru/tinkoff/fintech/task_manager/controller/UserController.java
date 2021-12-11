@@ -1,20 +1,20 @@
 package ru.tinkoff.fintech.task_manager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import ru.tinkoff.fintech.task_manager.exception.UserAlreadyExistsException;
-import ru.tinkoff.fintech.task_manager.exception.UserNotFoundException;
-import ru.tinkoff.fintech.task_manager.model.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.tinkoff.fintech.task_manager.dto.UserDto;
 import ru.tinkoff.fintech.task_manager.service.UserService;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
-
-import static java.lang.String.format;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.USER_ALREADY_EXISTS;
-import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.USER_NOT_FOUND;
 
 @RequestMapping("/user")
 @RestController()
@@ -27,44 +27,23 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping (consumes = APPLICATION_JSON_VALUE)
-    public void addUser(@Valid @RequestBody User user) {
-        try {
-            userService.save(user);
-        } catch (UserAlreadyExistsException e) {
-            throw USER_ALREADY_EXISTS.exception(format("User with id=%s already exists", user.getId()));
-        }
+    @PostMapping
+    public void addUser(@Valid @RequestBody UserDto userDto) {
+        userService.save(userDto);
     }
 
     @GetMapping
-    public List<User> findAll() {
-        return userService.findAll();
+    public UserDto findCurrentUser(Authentication authentication) {
+        return userService.findCurrentUser(authentication);
+    }
+
+    @PutMapping
+    public void editUser(@Valid @RequestBody UserDto userDto) {
+        userService.edit(userDto);
     }
 
     @DeleteMapping
     public void deleteUser(@RequestParam UUID id) {
-        try {
-            userService.delete(id);
-        } catch (UserNotFoundException e) {
-            throw USER_NOT_FOUND.exception(format("User with id=%s not found", id));
-        }
-    }
-
-//    @GetMapping
-//    public User findUser(@RequestParam UUID id) {
-//        try {
-//            return userService.findById(id);
-//        } catch (UserNotFoundException e) {
-//            throw USER_NOT_FOUND.exception(format("User with id=%s not found", id));
-//        }
-//    }
-
-    @PutMapping(consumes = APPLICATION_JSON_VALUE)
-    public void editUser(@Valid @RequestBody User user) {
-        try {
-            userService.edit(user);
-        } catch (UserNotFoundException e) {
-            throw USER_NOT_FOUND.exception(format("User with id=%s not found", user.getId()));
-        }
+        userService.delete(id);
     }
 }
