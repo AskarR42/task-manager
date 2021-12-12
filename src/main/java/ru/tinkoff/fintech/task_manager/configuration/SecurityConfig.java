@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://tasky-gray.vercel.app"));
+        configuration.setAllowedOrigins(List.of("https://tasky.sychusha.com"));
         configuration.setAllowedMethods(List.of("POST", "PUT", "GET", "OPTIONS", "DELETE"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));

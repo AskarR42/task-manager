@@ -11,6 +11,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("POST", "PUT", "GET", "OPTIONS", "DELETE").allowedOrigins("https://tasky-gray.vercel.app").allowCredentials(true);
+        registry.addMapping("/**").allowedMethods("POST", "PUT", "GET", "OPTIONS", "DELETE").allowedOrigins("https://tasky.sychusha.com").allowCredentials(true);
     }
 }
