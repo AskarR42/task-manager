@@ -78,7 +78,7 @@ public class BigTaskService {
         }
 
         for (LittleTaskDto littleTaskDto : bigTaskDto.getInfo().getSubTasks()) {
-            littleTaskService.save(littleTaskDto, littleTaskDto.getId());
+            littleTaskService.save(littleTaskDto, UUID.randomUUID());
         }
 
         bigTaskRepository.edit(new BigTask(
