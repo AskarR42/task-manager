@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@RequestMapping("/big_task")
+@RequestMapping("/api/big_task")
 @RestController
 public class BigTaskController {
 

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-//полное дерьмо а не архитектура
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

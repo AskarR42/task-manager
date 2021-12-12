@@ -3,7 +3,6 @@ package ru.tinkoff.fintech.task_manager.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.fintech.task_manager.dao.BigTaskRepository;
-import ru.tinkoff.fintech.task_manager.dao.LittleTaskRepository;
 import ru.tinkoff.fintech.task_manager.dto.BigTaskDto;
 import ru.tinkoff.fintech.task_manager.dto.LittleTaskDto;
 import ru.tinkoff.fintech.task_manager.dto.TaskInfo;
@@ -18,21 +17,28 @@ import java.util.UUID;
 public class BigTaskService {
 
     BigTaskRepository bigTaskRepository;
-    LittleTaskRepository littleTaskRepository;
+
+    LittleTaskService littleTaskService;
 
     @Autowired
-    public BigTaskService(BigTaskRepository bigTaskRepository, LittleTaskRepository littleTaskRepository) {
+    public BigTaskService(BigTaskRepository bigTaskRepository, LittleTaskService littleTaskService) {
         this.bigTaskRepository = bigTaskRepository;
-        this.littleTaskRepository = littleTaskRepository;
+        this.littleTaskService = littleTaskService;
     }
 
-    // Big task always has littleTasks = []
     public void save(BigTaskDto bigTaskDto, UUID bigTaskId) {
-        bigTaskRepository.save(new BigTask(bigTaskId, bigTaskDto.getInfo()
-            .getName(), bigTaskDto.getInfo()
-            .getDescription(), bigTaskDto.getInfo()
-            .getDate(), bigTaskDto.getInfo()
-            .getColor(), bigTaskDto.getColumnId(), bigTaskDto.getProjectId()));
+        bigTaskRepository.save(new BigTask(
+            bigTaskId,
+            bigTaskDto.getInfo().getName(),
+            bigTaskDto.getInfo().getDescription(),
+            bigTaskDto.getInfo().getDate(),
+            bigTaskDto.getInfo().getColor(),
+            bigTaskDto.getColumnId(),
+            bigTaskDto.getProjectId()));
+
+        for (LittleTaskDto littleTaskDto : bigTaskDto.getInfo().getSubTasks()) {
+            littleTaskService.save(littleTaskDto, UUID.randomUUID());
+        }
     }
 
     public List<LittleTaskDto> findLittleTasks(UUID bigTaskId) {
@@ -57,7 +63,7 @@ public class BigTaskService {
         BigTask bigTask = bigTaskRepository.findById(id)
             .orElseThrow(BigTaskNotFoundException::new);
         for (LittleTask littleTask : bigTaskRepository.findLittleTasks(bigTask)) {
-            littleTaskRepository.delete(littleTask);
+            littleTaskService.delete(littleTask.getId());
         }
         bigTaskRepository.delete(bigTask);
     }
@@ -68,11 +74,11 @@ public class BigTaskService {
             throw new BigTaskNotFoundException();
         }
         for (LittleTask littleTask : bigTaskRepository.findLittleTasks(new BigTask(bigTaskDto.getId(), bigTaskDto.toString(), bigTaskDto.getInfo().getDescription(), bigTaskDto.getInfo().getDate(), bigTaskDto.getInfo().getColor(), bigTaskDto.getColumnId(), bigTaskDto.getProjectId()))) {
-            littleTaskRepository.delete(littleTask);
+            littleTaskService.delete(littleTask.getId());
         }
 
         for (LittleTaskDto littleTaskDto : bigTaskDto.getInfo().getSubTasks()) {
-            littleTaskRepository.save(new LittleTask(UUID.randomUUID(), littleTaskDto.getStatus(), littleTaskDto.getText(), littleTaskDto.getBigTaskId()));
+            littleTaskService.save(littleTaskDto, littleTaskDto.getId());
         }
 
         bigTaskRepository.edit(new BigTask(

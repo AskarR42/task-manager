@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.Map;
 import java.util.UUID;
 
-@RequestMapping("/little_task")
+@RequestMapping("/api/little_task")
 @RestController
 public class LittleTaskController {
 

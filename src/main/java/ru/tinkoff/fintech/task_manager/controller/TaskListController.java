@@ -15,7 +15,7 @@ import java.util.UUID;
 import static java.lang.String.format;
 import static ru.tinkoff.fintech.task_manager.exception.ApplicationError.LIST_OF_TASKS_NOT_FOUND;
 
-@RequestMapping("/task_list")
+@RequestMapping("/api/task_list")
 @RestController
 public class TaskListController {
 

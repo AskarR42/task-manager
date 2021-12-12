@@ -8,7 +8,7 @@ import ru.tinkoff.fintech.task_manager.service.TaskService;
 import java.util.Map;
 import java.util.UUID;
 
-@RequestMapping("/task")
+@RequestMapping("/api/task")
 @RestController
 public class TaskController {
 

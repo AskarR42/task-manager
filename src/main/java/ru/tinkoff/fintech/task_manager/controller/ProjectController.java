@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 @RestController
 public class ProjectController {
 
